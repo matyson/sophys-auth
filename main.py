@@ -33,6 +33,25 @@ class UserRole(SQLModel, table=True):
     beamline: Beamline = Relationship(back_populates="users")
 
 
+class UserCreate(SQLModel):
+    name: str
+    username: str
+
+
+class RoleCreate(SQLModel):
+    name: str
+
+
+class BeamlineCreate(SQLModel):
+    name: str
+
+
+class UserRoleAssign(SQLModel):
+    username: str
+    role: str
+    beamline: str
+
+
 DATABASE_URL = "sqlite:///test.db"
 
 connect_args = {"check_same_thread": False}
@@ -146,3 +165,54 @@ async def read_beamline_roles(beamline_name: str, session: SessionDependency):
         role_dict[role_name][username] = {}
 
     return role_dict
+
+
+@app.post("/users/", response_model=User)
+async def create_user(user: UserCreate, session: SessionDependency):
+    db_user = User(**user.model_dump())
+    session.add(db_user)
+    session.commit()
+    session.refresh(db_user)
+    return db_user
+
+
+@app.post("/roles/", response_model=Role)
+async def create_role(role: RoleCreate, session: SessionDependency):
+    db_role = Role(**role.model_dump())
+    session.add(db_role)
+    session.commit()
+    session.refresh(db_role)
+    return db_role
+
+
+@app.post("/beamlines/", response_model=Beamline)
+async def create_beamline(beamline: BeamlineCreate, session: SessionDependency):
+    db_beamline = Beamline(**beamline.model_dump())
+    session.add(db_beamline)
+    session.commit()
+    session.refresh(db_beamline)
+    return db_beamline
+
+
+@app.post("/register/")
+async def assign_role(user_role: UserRoleAssign, session: SessionDependency):
+    user = session.exec(select(User).where(User.username == user_role.username)).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    role = session.exec(select(Role).where(Role.name == user_role.role)).first()
+    if not role:
+        raise HTTPException(status_code=404, detail="Role not found")
+
+    beamline = session.exec(
+        select(Beamline).where(Beamline.name == user_role.beamline)
+    ).first()
+    if not beamline:
+        raise HTTPException(status_code=404, detail="Beamline not found")
+
+    db_user_role = UserRole(user_id=user.id, role_id=role.id, beamline_id=beamline.id)
+    session.add(db_user_role)
+    session.commit()
+    return {
+        "message": f"Role {role.name} assigned to {user.name} for beamline {beamline.name}"
+    }

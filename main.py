@@ -124,7 +124,21 @@ def create_sample_data():
         session.commit()
 
 
-app = FastAPI()
+description = """
+Authorization control layer for each beamline's **bluesky** setup.
+
+This service provides an API to manage users' roles across beamline's experimental
+control setup that are built on top of bluesky `queue-server` and `http-server`
+services.
+
+"""
+
+
+app = FastAPI(
+    title="sophys-auth",
+    description=description,
+    version="0.1.0",
+)
 
 
 @app.on_event("startup")

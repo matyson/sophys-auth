@@ -5,7 +5,8 @@ from sqlmodel import Session, SQLModel, create_engine
 
 from .models import Beamline, Role, User, UserRole
 
-DATABASE_URL = "sqlite:///test.db"
+DATABASE_PATH = ".sqlite/data/database.db"
+DATABASE_URL = f"sqlite:///{DATABASE_PATH}"
 
 connect_args = {"check_same_thread": False}
 engine = create_engine(DATABASE_URL, connect_args=connect_args)

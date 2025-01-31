@@ -1,0 +1,25 @@
+# directories to ignore
+docs
+build
+dist
+
+# docker specific
+Dockerfile
+.dockerignore
+compose.yaml
+
+# env
+.env
+
+# git
+.git
+.gitignore
+
+# tooling
+.vscode
+.gitlab-ci.yml
+.ruff_cache
+
+# python specific
+**/__pycache__
+*.egg-info

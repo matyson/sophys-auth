@@ -11,3 +11,6 @@ wheels/
 
 # db
 *.db
+
+# env
+.env

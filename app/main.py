@@ -36,14 +36,14 @@ def on_startup():
     create_sample_data()
 
 
-@app.get("/users/")
+@app.get("/users")
 async def read_users(session: SessionDependency) -> list[User]:
     users = session.exec(select(User)).all()
 
     return users
 
 
-@app.get("/instrument/{beamline_name}/qserver/access/")
+@app.get("/instrument/{beamline_name}/qserver/access")
 async def read_beamline_roles(beamline_name: str, session: SessionDependency):
     role_dict = {}
     beamline = session.exec(
@@ -70,7 +70,7 @@ async def read_beamline_roles(beamline_name: str, session: SessionDependency):
     return role_dict
 
 
-@app.post("/users/", response_model=User)
+@app.post("/users", response_model=User)
 async def create_user(user: UserCreate, session: SessionDependency):
     db_user = User(**user.model_dump())
     session.add(db_user)
@@ -79,7 +79,7 @@ async def create_user(user: UserCreate, session: SessionDependency):
     return db_user
 
 
-@app.post("/roles/", response_model=Role)
+@app.post("/roles", response_model=Role)
 async def create_role(role: RoleCreate, session: SessionDependency):
     db_role = Role(**role.model_dump())
     session.add(db_role)
@@ -88,7 +88,7 @@ async def create_role(role: RoleCreate, session: SessionDependency):
     return db_role
 
 
-@app.post("/beamlines/", response_model=Beamline)
+@app.post("/beamlines", response_model=Beamline)
 async def create_beamline(beamline: BeamlineCreate, session: SessionDependency):
     db_beamline = Beamline(**beamline.model_dump())
     session.add(db_beamline)
@@ -97,7 +97,7 @@ async def create_beamline(beamline: BeamlineCreate, session: SessionDependency):
     return db_beamline
 
 
-@app.post("/register/")
+@app.post("/register")
 async def assign_role(user_role: UserRoleAssign, session: SessionDependency):
     user = session.exec(select(User).where(User.username == user_role.username)).first()
     if not user:

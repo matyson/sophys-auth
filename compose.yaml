@@ -2,6 +2,8 @@ services:
   app:
     build: .
     ports:
-      - "3000:3000"
+      - ${PORT:-3000}:3000
     volumes:
-      - .sqlite/data:/app/.sqlite/data:rw
+      - ${DB_HOST_DATA}:${DB_CONTAINER_DATA}
+    env_file:
+      - .env

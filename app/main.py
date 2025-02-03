@@ -1,6 +1,8 @@
 from fastapi import FastAPI, HTTPException
 from sqlmodel import select
 
+from ._version import __version__
+from .config import config
 from .db import SessionDependency, create_db_and_tables, create_sample_data
 from .models import (
     Beamline,
@@ -26,7 +28,8 @@ services.
 app = FastAPI(
     title="sophys-auth",
     description=description,
-    version="0.1.0",
+    version=__version__,
+    root_path=config.root_path,
 )
 
 

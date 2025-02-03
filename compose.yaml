@@ -4,6 +4,6 @@ services:
     ports:
       - ${PORT:-3000}:3000
     volumes:
-      - ${DB_HOST_DATA}:${DB_CONTAINER_DATA}
+      - ${DB_HOST_DATA}:${DB_CONTAINER_DATA}:rw
     env_file:
       - .env

@@ -3,9 +3,10 @@ from typing import Annotated
 from fastapi import Depends
 from sqlmodel import Session, SQLModel, create_engine
 
+from .config import config
 from .models import Beamline, Role, User, UserRole
 
-DATABASE_PATH = ".sqlite/data/database.db"
+DATABASE_PATH = f"{config.db_container_path}/{config.db_name}"
 DATABASE_URL = f"sqlite:///{DATABASE_PATH}"
 
 connect_args = {"check_same_thread": False}
